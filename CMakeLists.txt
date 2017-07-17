@@ -34,4 +34,23 @@ project(libresponse_psi4 CXX)
 
 find_package(psi4 1.0 REQUIRED)
 
-add_psi4_plugin(libresponse_psi4 plugin.cc)
+set(SRC
+    libresponse/configurable.C
+    libresponse/dump_ao_integrals.C
+    libresponse/index_printing.C
+    libresponse/indices.C
+    libresponse/matvec_i.C
+    libresponse/utils.C
+    libresponse/linear/helpers.C
+    libresponse/linear/interface.C
+    libresponse/linear/interface_nonorthogonal.C
+    libresponse/linear/printing.C
+    libresponse/operator_spec.C
+    libresponse/set_defaults.C
+    )
+
+set(SRC_PSI4
+    plugin.cc
+    )
+
+add_psi4_plugin(libresponse_psi4 ${SRC} ${SRC_PSI4})

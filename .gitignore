@@ -6,3 +6,6 @@ libresponse_psi4.so
 __pycache__/
 output.dat
 timer.dat
+
+# symlink
+libresponse
