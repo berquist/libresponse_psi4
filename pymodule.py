@@ -32,6 +32,20 @@ import psi4
 import psi4.driver.p4util as p4util
 from psi4.driver.procrouting import proc_util
 
+
+def disable_symmetry(molecule):
+    molecule.update_geometry()
+    if molecule.schoenflies_symbol() != 'c1':
+        psi4.core.print_out("""  A requested method does not make use of molecular symmetry: """
+                            """further calculations in C1 point group.\n""")
+        molecule = molecule.clone()
+        molecule.reset_point_group('c1')
+        molecule.fix_orientation(True)
+        molecule.fix_com(True)
+        molecule.update_geometry()
+    return molecule
+
+
 def run_libresponse_psi4(name, **kwargs):
     r"""Function encoding sequence of PSI module and plugin calls so that
     libresponse_psi4 can be called via :py:func:`~driver.energy`. For post-scf plugins.
@@ -44,6 +58,17 @@ def run_libresponse_psi4(name, **kwargs):
 
     # Your plugin's psi4 run sequence goes here
     psi4.core.set_local_option('MYPLUGIN', 'PRINT', 1)
+
+    # The response density is asymmetric; need to build generalized
+    # J/K.
+    proc_util.check_non_symmetric_jk_density("libresponse")
+
+    # Disable symmetry, even for passed-in wavefunctions.
+    molecule = kwargs.get('molecule', None)
+    if molecule is None:
+        molecule = psi4.core.get_active_molecule()
+    molecule = disable_symmetry(molecule)
+    kwargs['molecule'] = molecule
 
     # Compute a SCF reference, a wavefunction is return which holds the molecule used, orbitals
     # Fock matrices, and more
