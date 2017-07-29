@@ -6,6 +6,8 @@
 #include "psi4/libqt/qt.h"
 #include "psi4/libscf_solver/hf.h"
 
+#include "libresponse/utils.h"
+
 
 MatVec_Psi4::MatVec_Psi4(SharedWavefunction wfn, Options &options) : options_(options)
 {
@@ -79,16 +81,21 @@ void MatVec_Psi4::compute(arma::cube &J, arma::cube &K, const std::vector<arma::
     const size_t nvirt_alph = L[0].n_cols;
     SharedMatrix pL_alph(new Matrix("L (alpha)", nbasis, nvirt_alph));
     SharedMatrix pR_alph(new Matrix("R (alpha)", nbasis, nvirt_alph));
-    C_DCOPY(nbasis*nvirt_alph, const_cast<double *>(L[0].memptr()), 1, pL_alph->pointer()[0], 1);
-    C_DCOPY(nbasis*nvirt_alph, const_cast<double *>(R[0].memptr()), 1, pR_alph->pointer()[0], 1);
+    // TODO transpose without copy?
+    arma::mat tmpL = L[0].t();
+    arma::mat tmpR = R[0].t();
+    C_DCOPY(nbasis*nvirt_alph, tmpL.memptr(), 1, pL_alph->pointer()[0], 1);
+    C_DCOPY(nbasis*nvirt_alph, tmpR.memptr(), 1, pR_alph->pointer()[0], 1);
     vpL.push_back(pL_alph);
     vpR.push_back(pR_alph);
     if (nden == 2) {
         const size_t nvirt_beta = L[1].n_cols;
         SharedMatrix pL_beta(new Matrix("L (beta)", nbasis, nvirt_beta));
         SharedMatrix pR_beta(new Matrix("R (beta)", nbasis, nvirt_beta));
-        C_DCOPY(nbasis*nvirt_beta, const_cast<double *>(L[1].memptr()), 1, pL_beta->pointer()[0], 1);
-        C_DCOPY(nbasis*nvirt_beta, const_cast<double *>(R[1].memptr()), 1, pR_beta->pointer()[0], 1);
+        tmpL = L[1].t();
+        tmpR = R[1].t();
+        C_DCOPY(nbasis*nvirt_beta, tmpL.memptr(), 1, pL_beta->pointer()[0], 1);
+        C_DCOPY(nbasis*nvirt_beta, tmpR.memptr(), 1, pR_beta->pointer()[0], 1);
         vpL.push_back(pL_beta);
         vpR.push_back(pR_beta);
     }
@@ -106,8 +113,9 @@ void MatVec_Psi4::compute(arma::cube &J, arma::cube &K, const std::vector<arma::
     for (size_t s = 0; s < nden; s++) {
         arma::mat mJ(vpJ[s]->get_pointer(), vpJ[s]->rowdim(), vpJ[s]->coldim(), false, true);
         arma::mat mK(vpK[s]->get_pointer(), vpK[s]->rowdim(), vpK[s]->coldim(), false, true);
-        J.slice(s) = mJ;
-        K.slice(s) = mK;
+        // Place things back in Fortran order.
+        J.slice(s) = mJ.t();
+        K.slice(s) = mK.t();
     }
 
     return;

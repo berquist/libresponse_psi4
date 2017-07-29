@@ -108,7 +108,10 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
     // Configuration.
     libresponse::configurable libresponse_options;
     set_defaults(libresponse_options);
+    // TODO input option
     libresponse_options.cfg<int>("print_level", 100);
+    // Psi4 must take C_left/C_right, not Dg!
+    libresponse_options.cfg<bool>("_do_compute_generalized_density", false);
 
     // Frequencies.
     std::vector<double> omega;
