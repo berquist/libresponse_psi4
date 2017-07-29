@@ -11,10 +11,6 @@ using namespace psi;
 
 void AO_dipole_length(arma::cube &M_AO, const arma::vec &origin, SharedWavefunction wfn, Options &options) {
 
-    // Q-Chem x -> Psi4 z with many different elements
-    // Q-Chem y -> Psi4 x with many more non-zero elements
-    // Q-Chem z -> Psi4 y
-
     const Vector3 sm_origin(origin.memptr());
 
     const size_t nbf = wfn->basisset()->nbf();
@@ -35,7 +31,6 @@ void AO_dipole_length(arma::cube &M_AO, const arma::vec &origin, SharedWavefunct
 
     for (size_t c = 0; c < 3; c++) {
         SharedMatrix msm_dipole = v_dipole[c];
-        msm_dipole->print();
         arma::mat ma_dipole(msm_dipole->get_pointer(), msm_dipole->rowdim(), msm_dipole->coldim(), false, true);
         M_AO.slice(c) = ma_dipole;
     }

@@ -86,13 +86,8 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
     // Psi4 is C++; storage is row major!
     SharedMatrix mCa = ref_wfn->Ca()->transpose();
     SharedMatrix mCb = ref_wfn->Cb()->transpose();
-    mCa->print();
-    mCb->print();
-
     SharedVector vEa = ref_wfn->epsilon_a();
     SharedVector vEb = ref_wfn->epsilon_b();
-    vEa->print();
-    vEb->print();
     arma::mat Ca(mCa->get_pointer(), mCa->rowdim(), mCa->coldim(), true);
     arma::vec Ea(vEa->pointer(), vEa->dim(), true);
     C.slice(0) = Ca;
@@ -130,10 +125,6 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
     libresponse::operator_metadata metadata(operator_label, origin_label, -1, false, false);
     libresponse::operator_spec operator_(metadata, integrals, origin, true);
     operators.push_back(operator_);
-
-    C.print("C");
-    moene.print("E");
-    integrals.print("integrals");
 
     // 2-electron integral engine.
     MatVec_Psi4 * matvec = new MatVec_Psi4(ref_wfn, options);
