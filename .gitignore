@@ -4,8 +4,15 @@ Makefile
 cmake_install.cmake
 libresponse_psi4.so
 __pycache__/
-output.dat
-timer.dat
 
 # symlink
 libresponse
+
+# Psi4 calculations
+*.clean
+*.out
+output.dat
+timer.dat
+
+# Q-Chem
+pathtable

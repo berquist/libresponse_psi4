@@ -34,15 +34,21 @@ from psi4.driver.procrouting import proc_util
 
 
 def disable_symmetry(molecule):
+    """Return a molecule with symmetry completely disabled."""
     molecule.update_geometry()
     if molecule.schoenflies_symbol() != 'c1':
         psi4.core.print_out("""  A requested method does not make use of molecular symmetry: """
                             """further calculations in C1 point group.\n""")
         molecule = molecule.clone()
         molecule.reset_point_group('c1')
+        # TODO the orientation and absolute position (COM translation)
+        # has already been messed with at this point! Need to disable
+        # in the input file.
         molecule.fix_orientation(True)
         molecule.fix_com(True)
         molecule.update_geometry()
+        # psi4_string = molecule.create_psi4_string_from_molecule()
+        # print(psi4_string)
     return molecule
 
 

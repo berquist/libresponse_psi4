@@ -34,23 +34,43 @@ project(libresponse_psi4 CXX)
 
 find_package(psi4 1.0 REQUIRED)
 
-set(SRC
-    libresponse/configurable.C
-    libresponse/dump_ao_integrals.C
-    libresponse/index_printing.C
-    libresponse/indices.C
-    libresponse/matvec_i.C
-    libresponse/utils.C
-    libresponse/linear/helpers.C
-    libresponse/linear/interface.C
-    libresponse/linear/interface_nonorthogonal.C
-    libresponse/linear/printing.C
-    libresponse/operator_spec.C
-    libresponse/set_defaults.C
-    )
+# set(SRC
+#     libresponse/configurable.C
+#     libresponse/dump_ao_integrals.C
+#     libresponse/index_printing.C
+#     libresponse/indices.C
+#     libresponse/matvec_i.C
+#     libresponse/utils.C
+#     libresponse/linear/helpers.C
+#     libresponse/linear/interface.C
+#     libresponse/linear/interface_nonorthogonal.C
+#     libresponse/linear/printing.C
+#     libresponse/operator_spec.C
+#     libresponse/set_defaults.C
+#     )
 
 set(SRC_PSI4
+    matvec_psi4.cc
+    wrappers.cc
     plugin.cc
     )
 
-add_psi4_plugin(libresponse_psi4 ${SRC} ${SRC_PSI4})
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_subdirectory(libresponse)
+
+function(add_psi4_plugin_custom TARGET SOURCES)
+    # remove ${TARGET} from ${ARGV} to use ${ARGV} as SOURCES
+    list(REMOVE_AT ARGV 0)
+
+    # checks compiler (and gcc, if necessary) C++11 compliant
+    include(custom_cxxstandard)
+
+    add_library(${TARGET} MODULE ${ARGV})
+    target_link_libraries(${TARGET} PRIVATE psi4::core response)
+    set_target_properties(${TARGET} PROPERTIES PREFIX "")
+    if (APPLE)
+        set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif()
+endfunction()
+
+add_psi4_plugin_custom(libresponse_psi4 ${SRC_PSI4})

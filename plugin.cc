@@ -29,11 +29,25 @@
  */
 
 #include "psi4/psi4-dec.h"
-#include "psi4/libparallel/parallel.h"
 #include "psi4/liboptions/liboptions.h"
 #include "psi4/libpsio/psio.hpp"
 
-namespace psi{ namespace libresponse_psi4 {
+#include "psi4/libmints/basisset.h"
+#include "psi4/libmints/matrix.h"
+#include "psi4/libmints/vector.h"
+#include "psi4/libmints/wavefunction.h"
+#include "psi4/libpsi4util/PsiOutStream.h"
+
+#include "libresponse/libresponse.h"
+#include "libresponse/linear/interface.h"
+
+#include "matvec_psi4.h"
+#include "wrappers.h"
+
+#include <armadillo>
+
+namespace psi {
+namespace libresponse_psi4 {
 
 extern "C"
 int read_options(std::string name, Options& options)
@@ -49,13 +63,109 @@ int read_options(std::string name, Options& options)
 extern "C"
 SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options)
 {
-    int print = options.get_int("PRINT");
+    // This is the Psi4 output file. Replace the cout stream buffer
+    // with the one from Psi4.
+    std::ostream *ofs = outfile->stream();
+    std::streambuf *cout_original_buff = std::cout.rdbuf();
+    std::cout.rdbuf(ofs->rdbuf());
+ 
+    const size_t NOrb = ref_wfn->nmo();
+    const size_t NOa = ref_wfn->nalpha();
+    const size_t NOb = ref_wfn->nbeta();
+    const size_t NVa = NOrb - NOa;
+    const size_t NVb = NOrb - NOb;
 
-    /* Your code goes here */
+    const size_t NDen = ref_wfn->same_a_b_dens() ? 1 : 2;
+
+    std::shared_ptr<BasisSet> bset = ref_wfn->basisset();
+    const size_t NBasis = bset->nbf();
+
+    arma::cube C(NBasis, NOrb, NDen);
+    arma::mat moene(NOrb, NDen);
+
+    // Psi4 is C++; storage is row major!
+    SharedMatrix mCa = ref_wfn->Ca()->transpose();
+    SharedMatrix mCb = ref_wfn->Cb()->transpose();
+    mCa->print();
+    mCb->print();
+
+    SharedVector vEa = ref_wfn->epsilon_a();
+    SharedVector vEb = ref_wfn->epsilon_b();
+    vEa->print();
+    vEb->print();
+    arma::mat Ca(mCa->get_pointer(), mCa->rowdim(), mCa->coldim(), true);
+    arma::vec Ea(vEa->pointer(), vEa->dim(), true);
+    C.slice(0) = Ca;
+    moene.col(0) = Ea;
+    if (NDen == 2) {
+        arma::mat Cb(mCb->get_pointer(), mCb->rowdim(), mCb->coldim(), true);
+        arma::vec Eb(vEb->pointer(), vEb->dim(), true);
+        C.slice(1) = Cb;
+        moene.col(1) = Eb;
+    }
+
+    arma::uvec occupations(4);
+    occupations(0) = NOa;
+    occupations(1) = NVa;
+    occupations(2) = NOb;
+    occupations(3) = NVb;
+
+    // Configuration.
+    libresponse::configurable libresponse_options;
+    set_defaults(libresponse_options);
+    libresponse_options.cfg<int>("print_level", 100);
+
+    // Frequencies.
+    std::vector<double> omega;
+    // Force the static case for now.
+    omega.push_back(0.0);
+
+    // 1-electron integrals for operators.
+    std::vector<libresponse::operator_spec> operators;
+    arma::cube integrals;
+    arma::vec origin(3, arma::fill::zeros);
+    AO_dipole_length(integrals, origin, ref_wfn, options);
+    std::string operator_label = "dipole";
+    std::string origin_label = "zero";
+    libresponse::operator_metadata metadata(operator_label, origin_label, -1, false, false);
+    libresponse::operator_spec operator_(metadata, integrals, origin, true);
+    operators.push_back(operator_);
+
+    C.print("C");
+    moene.print("E");
+    integrals.print("integrals");
+
+    // 2-electron integral engine.
+    MatVec_Psi4 * matvec = new MatVec_Psi4(ref_wfn, options);
+
+    libresponse::SolverIterator_linear * solver_iterator = new libresponse::SolverIterator_linear();
+
+    arma::cube results(integrals.n_slices, integrals.n_slices, omega.size(), arma::fill::zeros);
+
+    libresponse::solve_linear_response(
+        results, matvec, solver_iterator, C, moene, occupations, omega, operators, libresponse_options
+        );
+
+    delete matvec;
+    delete solver_iterator;
+
+    // Final printing.
+    std::ostringstream os;
+    os.precision(6);
+    os.setf(std::ios_base::fixed, std::ios_base::floatfield);
+
+    os << " " << dashes << std::endl;
+    print_polarizability(os, results.slice(0));
+    os << " " << rcarats << std::endl;
+
+    std::cout << os.str();
+
+    // Put the original cout stream buffer back.
+    std::cout.rdbuf(cout_original_buff);
 
     // Typically you would build a new wavefunction and populate it with data
     return ref_wfn;
 }
 
-}} // End namespaces
-
+} // namespace libresponse_psi4
+} // namespace psi4
