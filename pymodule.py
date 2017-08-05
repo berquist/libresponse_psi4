@@ -32,6 +32,8 @@ import psi4
 import psi4.driver.p4util as p4util
 from psi4.driver.procrouting import proc_util
 
+from psi4.core import print_out
+
 
 def disable_symmetry(molecule):
     """Return a molecule with symmetry completely disabled."""
@@ -59,6 +61,7 @@ def run_libresponse_psi4(name, **kwargs):
     >>> energy('libresponse_psi4')
 
     """
+
     lowername = name.lower()
     kwargs = p4util.kwargs_lower(kwargs)
 
@@ -85,6 +88,8 @@ def run_libresponse_psi4(name, **kwargs):
 
     # Ensure IWL files have been written when not using DF/CD
     proc_util.check_iwl_file_from_scf_type(psi4.core.get_option('SCF', 'SCF_TYPE'), ref_wfn)
+
+    print_out("-> Printing from the Python layer\n")
 
     # Call the Psi4 plugin
     # Please note that setting the reference wavefunction in this way is ONLY for plugins

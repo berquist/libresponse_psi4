@@ -68,6 +68,8 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
     std::ostream *ofs = outfile->stream();
     std::streambuf *cout_original_buff = std::cout.rdbuf();
     std::cout.rdbuf(ofs->rdbuf());
+
+    std::cout << "-> Printing from the C++ layer" << std::endl;
  
     const size_t NOrb = ref_wfn->nmo();
     const size_t NOa = ref_wfn->nalpha();
