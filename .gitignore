@@ -16,3 +16,5 @@ timer.dat
 
 # Q-Chem
 pathtable
+
+.ccls-cache/
