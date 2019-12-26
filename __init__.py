@@ -1,11 +1,11 @@
 #
 # @BEGIN LICENSE
 #
-# libresponse_psi4 by Psi4 Developer, a plugin to:
+# libresponse_psi4 by Eric Berquist, a plugin to:
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.
@@ -31,8 +31,8 @@
 """Plugin docstring.
 
 """
-__version__ = '0.1'
-__author__  = 'Psi4 Developer'
+__version__ = "0.1"
+__author__ = "Eric Berquist"
 
 # Load Python modules
 from .pymodule import *
@@ -40,7 +40,7 @@ from .pymodule import *
 # Load C++ plugin
 import os
 import psi4
-plugdir = os.path.split(os.path.abspath(__file__))[0]
-sofile = plugdir + '/' + os.path.split(plugdir)[1] + '.so'
-psi4.core.plugin_load(sofile)
 
+plugdir = os.path.split(os.path.abspath(__file__))[0]
+sofile = plugdir + "/" + os.path.split(plugdir)[1] + ".so"
+psi4.core.plugin_load(sofile)

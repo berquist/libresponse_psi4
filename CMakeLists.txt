@@ -1,11 +1,11 @@
 #
 # @BEGIN LICENSE
 #
-# libresponse_psi4 by Psi4 Developer, a plugin to:
+# libresponse_psi4 by Eric Berquist, a plugin to:
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.

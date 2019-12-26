@@ -1,11 +1,11 @@
 .. comment /*
 .. comment  * @BEGIN LICENSE
 .. comment  *
-.. comment  * libresponse_psi4 by Psi4 Developer, a plugin to:
+.. comment  * libresponse_psi4 by Eric Berquist, a plugin to:
 .. comment  *
 .. comment  * Psi4: an open-source quantum chemistry software package
 .. comment  *
-.. comment  * Copyright (c) 2007-2017 The Psi4 Developers.
+.. comment  * Copyright (c) 2007-2019 The Psi4 Developers.
 .. comment  *
 .. comment  * The copyrights for code used from other parties are included in
 .. comment  * the corresponding files.
@@ -36,8 +36,8 @@
 Theory, Usage, and Notes
 ------------------------
 
-.. codeauthor:: Psi4 Developer
-.. sectionauthor:: Psi4 Developer
+.. codeauthor:: Eric Berquist
+.. sectionauthor:: Eric Berquist
 
 Casual documentation for this plugin goes here.
 Uncomment the ``.. comment`` for some examples.

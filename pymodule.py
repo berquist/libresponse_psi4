@@ -1,11 +1,11 @@
 #
 # @BEGIN LICENSE
 #
-# libresponse_psi4 by Psi4 Developer, a plugin to:
+# libresponse_psi4 by Eric Berquist, a plugin to:
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.
@@ -38,11 +38,13 @@ from psi4.core import print_out
 def disable_symmetry(molecule):
     """Return a molecule with symmetry completely disabled."""
     molecule.update_geometry()
-    if molecule.schoenflies_symbol() != 'c1':
-        psi4.core.print_out("""  A requested method does not make use of molecular symmetry: """
-                            """further calculations in C1 point group.\n""")
+    if molecule.schoenflies_symbol() != "c1":
+        psi4.core.print_out(
+            """  A requested method does not make use of molecular symmetry: """
+            """further calculations in C1 point group.\n"""
+        )
         molecule = molecule.clone()
-        molecule.reset_point_group('c1')
+        molecule.reset_point_group("c1")
         # TODO the orientation and absolute position (COM translation)
         # has already been messed with at this point! Need to disable
         # in the input file.
@@ -62,42 +64,43 @@ def run_libresponse_psi4(name, **kwargs):
 
     """
 
-    lowername = name.lower()
     kwargs = p4util.kwargs_lower(kwargs)
 
     # Your plugin's psi4 run sequence goes here
-    psi4.core.set_local_option('MYPLUGIN', 'PRINT', 1)
+    psi4.core.set_local_option("MYPLUGIN", "PRINT", 1)
 
     # The response density is asymmetric; need to build generalized
     # J/K.
     proc_util.check_non_symmetric_jk_density("libresponse")
 
     # Disable symmetry, even for passed-in wavefunctions.
-    molecule = kwargs.get('molecule', None)
+    molecule = kwargs.get("molecule", None)
     if molecule is None:
         molecule = psi4.core.get_active_molecule()
     molecule = disable_symmetry(molecule)
-    kwargs['molecule'] = molecule
+    kwargs["molecule"] = molecule
 
     # Compute a SCF reference, a wavefunction is return which holds the molecule used, orbitals
     # Fock matrices, and more
-    print('Attention! This SCF may be density-fitted.')
-    ref_wfn = kwargs.get('ref_wfn', None)
+    print("Attention! This SCF may be density-fitted.")
+    ref_wfn = kwargs.get("ref_wfn", None)
     if ref_wfn is None:
         ref_wfn = psi4.driver.scf_helper(name, **kwargs)
 
     # Ensure IWL files have been written when not using DF/CD
-    proc_util.check_iwl_file_from_scf_type(psi4.core.get_option('SCF', 'SCF_TYPE'), ref_wfn)
+    proc_util.check_iwl_file_from_scf_type(
+        psi4.core.get_option("SCF", "SCF_TYPE"), ref_wfn
+    )
 
     # Call the Psi4 plugin
     # Please note that setting the reference wavefunction in this way is ONLY for plugins
-    libresponse_psi4_wfn = psi4.core.plugin('libresponse_psi4.so', ref_wfn)
+    libresponse_psi4_wfn = psi4.core.plugin("libresponse_psi4.so", ref_wfn)
 
     return libresponse_psi4_wfn
 
 
 # Integration with driver routines
-psi4.driver.procedures['energy']['libresponse_psi4'] = run_libresponse_psi4
+psi4.driver.procedures["energy"]["libresponse_psi4"] = run_libresponse_psi4
 
 
 def exampleFN():
