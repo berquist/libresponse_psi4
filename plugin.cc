@@ -42,6 +42,8 @@
 #include "libresponse/linear/interface.h"
 
 #include "matvec_psi4.h"
+// #include "operatordatatype.h"
+#include "parse_operators.h"
 #include "wrappers.h"
 
 #include <armadillo>
@@ -55,7 +57,14 @@ int read_options(std::string name, Options& options)
     if (name == "LIBRESPONSE_PSI4"|| options.read_globals()) {
         /*- The amount of information printed to the output file -*/
         options.add_int("PRINT", 1);
-    }
+        // void add(std::string key, DataType* data);
+        // OperatorDataType etc.
+        options.add("OPERATOR_DIPOLE", new ArrayType());
+        options.add("OPERATOR_QUADRUPOLE", new ArrayType());
+        // options.add("OPERATOR_MULTIPOLE", new ArrayType());
+        options.add("OPERATOR_NABLA", new ArrayType());
+        options.add("OPERATOR_ANGMOM", new ArrayType());
+   }
 
     return true;
 }
@@ -69,8 +78,8 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
     std::streambuf *cout_original_buff = std::cout.rdbuf();
     std::cout.rdbuf(ofs->rdbuf());
 
-    std::cout << "-> Printing from the C++ layer" << std::endl;
- 
+    options.print();
+
     const size_t NOrb = ref_wfn->nmo();
     const size_t NOa = ref_wfn->nalpha();
     const size_t NOb = ref_wfn->nbeta();
@@ -122,21 +131,14 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
 
     // 1-electron integrals for operators.
     std::vector<libresponse::operator_spec> operators;
-    arma::cube integrals;
-    arma::vec origin(3, arma::fill::zeros);
-    AO_dipole_length(integrals, origin, ref_wfn, options);
-    std::string operator_label = "dipole";
-    std::string origin_label = "zero";
-    libresponse::operator_metadata metadata(operator_label, origin_label, -1, false, false);
-    libresponse::operator_spec operator_(metadata, integrals, origin, true);
-    operators.push_back(operator_);
+    parse_operators(ref_wfn, options, operators);
 
     // 2-electron integral engine.
     MatVec_Psi4 * matvec = new MatVec_Psi4(ref_wfn, options);
 
     libresponse::SolverIterator_linear * solver_iterator = new libresponse::SolverIterator_linear();
 
-    arma::cube results(integrals.n_slices, integrals.n_slices, omega.size(), arma::fill::zeros);
+    arma::cube results;
 
     libresponse::solve_linear_response(
         results, matvec, solver_iterator, C, moene, occupations, omega, operators, libresponse_options

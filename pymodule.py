@@ -89,8 +89,6 @@ def run_libresponse_psi4(name, **kwargs):
     # Ensure IWL files have been written when not using DF/CD
     proc_util.check_iwl_file_from_scf_type(psi4.core.get_option('SCF', 'SCF_TYPE'), ref_wfn)
 
-    print_out("-> Printing from the Python layer\n")
-
     # Call the Psi4 plugin
     # Please note that setting the reference wavefunction in this way is ONLY for plugins
     libresponse_psi4_wfn = psi4.core.plugin('libresponse_psi4.so', ref_wfn)

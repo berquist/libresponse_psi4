@@ -51,6 +51,8 @@ find_package(psi4 1.1 REQUIRED)
 
 set(SRC_PSI4
     matvec_psi4.cc
+    # operatordatatype.cc
+    parse_operators.cc
     wrappers.cc
     plugin.cc
     )
