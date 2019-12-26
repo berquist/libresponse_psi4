@@ -52,7 +52,7 @@ namespace psi {
 namespace libresponse_psi4 {
 
 extern "C"
-int read_options(std::string name, Options& options)
+int read_options(const std::string& name, Options& options)
 {
     if (name == "LIBRESPONSE_PSI4"|| options.read_globals()) {
         /*- The amount of information printed to the output file -*/
@@ -64,7 +64,7 @@ int read_options(std::string name, Options& options)
         // options.add("OPERATOR_MULTIPOLE", new ArrayType());
         options.add("OPERATOR_NABLA", new ArrayType());
         options.add("OPERATOR_ANGMOM", new ArrayType());
-   }
+    }
 
     return true;
 }
@@ -88,24 +88,24 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
 
     const size_t NDen = ref_wfn->same_a_b_dens() ? 1 : 2;
 
-    std::shared_ptr<BasisSet> bset = ref_wfn->basisset();
+    const std::shared_ptr<BasisSet> bset = ref_wfn->basisset();
     const size_t NBasis = bset->nbf();
 
     arma::cube C(NBasis, NOrb, NDen);
     arma::mat moene(NOrb, NDen);
 
     // Psi4 is C++; storage is row major!
-    SharedMatrix mCa = ref_wfn->Ca()->transpose();
-    SharedMatrix mCb = ref_wfn->Cb()->transpose();
-    SharedVector vEa = ref_wfn->epsilon_a();
-    SharedVector vEb = ref_wfn->epsilon_b();
-    arma::mat Ca(mCa->get_pointer(), mCa->rowdim(), mCa->coldim(), true);
-    arma::vec Ea(vEa->pointer(), vEa->dim(), true);
+    const SharedMatrix mCa = ref_wfn->Ca()->transpose();
+    const SharedMatrix mCb = ref_wfn->Cb()->transpose();
+    const SharedVector vEa = ref_wfn->epsilon_a();
+    const SharedVector vEb = ref_wfn->epsilon_b();
+    const arma::mat Ca(mCa->get_pointer(), mCa->rowdim(), mCa->coldim(), true);
+    const arma::vec Ea(vEa->pointer(), vEa->dim(), true);
     C.slice(0) = Ca;
     moene.col(0) = Ea;
     if (NDen == 2) {
-        arma::mat Cb(mCb->get_pointer(), mCb->rowdim(), mCb->coldim(), true);
-        arma::vec Eb(vEb->pointer(), vEb->dim(), true);
+        const arma::mat Cb(mCb->get_pointer(), mCb->rowdim(), mCb->coldim(), true);
+        const arma::vec Eb(vEb->pointer(), vEb->dim(), true);
         C.slice(1) = Cb;
         moene.col(1) = Eb;
     }
@@ -152,9 +152,9 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
     os.precision(6);
     os.setf(std::ios_base::fixed, std::ios_base::floatfield);
 
-    os << " " << dashes << std::endl;
-    print_polarizability(os, results.slice(0));
-    os << " " << rcarats << std::endl;
+    // os << " " << dashes << std::endl;
+    // print_polarizability(os, results.slice(0));
+    // os << " " << rcarats << std::endl;
 
     std::cout << os.str();
 

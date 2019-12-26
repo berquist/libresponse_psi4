@@ -6,7 +6,7 @@
 #include "libresponse/operator_spec.h"
 
 void parse_operators(
-    psi::SharedWavefunction ref_wfn,
+    psi::SharedWavefunction &ref_wfn,
     psi::Options &options,
     std::vector<libresponse::operator_spec> &operators);
 

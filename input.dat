@@ -1,13 +1,9 @@
-# -*- mode: python -*-
-# PYTHONPATH must include directory above plugin directory.
-#     Define either externally or here, then import plugin.
 sys.path.insert(0, './..')
 import libresponse_psi4
 
-molecule water {
-O  0.003 -1.398  0.000
-H -0.525 -1.662  0.758
-H -0.525 -1.662 -0.758
+molecule lithium_hydride {
+Li  0.0000  0.0000  0.0000
+H   0.0000  0.0000  1.5949
     symmetry c1
     no_reorient
     no_com
@@ -20,7 +16,10 @@ set {
 }
 
 set libresponse_psi4 {
-    print 1
+    operator_dipole [zero]
+    operator_quadrupole ["zero"]
+    operator_nabla [zero]
+    operator_angmom [explicit, 1.0, 2.0, 3.0]
 }
 
 energy('libresponse_psi4')

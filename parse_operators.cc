@@ -7,7 +7,7 @@
 using namespace libresponse;
 
 void parse_operators(
-    psi::SharedWavefunction ref_wfn,
+    psi::SharedWavefunction &ref_wfn,
     psi::Options &options,
     std::vector<operator_spec> &operators) {
 
@@ -19,7 +19,7 @@ void parse_operators(
 
     if (options["OPERATOR_DIPOLE"].has_changed()) {
         std::cout << " Adding operator: dipole (length gauge)" << std::endl;
-        std::string operator_label = "dipole";
+        const std::string operator_label = "dipole";
         AO_dipole_length(integrals, origin, ref_wfn, options);
         operator_metadata metadata(operator_label, origin_label, -1, false, false);
         operator_spec operator_(metadata, integrals, origin, do_response);
@@ -28,7 +28,7 @@ void parse_operators(
 
     if (options["OPERATOR_QUADRUPOLE"].has_changed()) {
         std::cout << " Adding operator: quadrupole" << std::endl;
-        std::string operator_label = "quadrupole";
+        const std::string operator_label = "quadrupole";
         AO_quadrupole_length(integrals, origin, ref_wfn, options);
         operator_metadata metadata(operator_label, origin_label, -1, false, false);
         operator_spec operator_(metadata, integrals, origin, do_response);
@@ -40,7 +40,7 @@ void parse_operators(
 
     if (options["OPERATOR_NABLA"].has_changed()) {
         std::cout << " Adding operator: dipole (velocity gauge) / linear momentum" << std::endl;
-        std::string operator_label = "dipvel";
+        const std::string operator_label = "dipvel";
         AO_dipole_velocity(integrals, ref_wfn, options);
         operator_metadata metadata(operator_label, origin_label, -1, true, false);
         operator_spec operator_(metadata, integrals, origin, do_response);
@@ -49,7 +49,7 @@ void parse_operators(
 
     if (options["OPERATOR_ANGMOM"].has_changed()) {
         std::cout << " Adding operator: angular momentum" << std::endl;
-        std::string operator_label = "angmom";
+        const std::string operator_label = "angmom";
         AO_angular_momentum(integrals, origin, ref_wfn, options);
         operator_metadata metadata(operator_label, origin_label, -1, true, false);
         operator_spec operator_(metadata, integrals, origin, do_response);
