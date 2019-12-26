@@ -32,7 +32,7 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project(libresponse_psi4 CXX)
 
-find_package(psi4 1.0 REQUIRED)
+find_package(psi4 1.1 REQUIRED)
 
 # set(SRC
 #     libresponse/configurable.C
@@ -62,13 +62,15 @@ function(add_psi4_plugin_custom TARGET SOURCES)
     # remove ${TARGET} from ${ARGV} to use ${ARGV} as SOURCES
     list(REMOVE_AT ARGV 0)
 
-    # checks compiler (and gcc, if necessary) C++11 compliant
+    set(psi4_CXX_STANDARD 14)
+    # checks compiler (and gcc, if necessary) C++14 compliant
     include(custom_cxxstandard)
 
     add_library(${TARGET} MODULE ${ARGV})
     target_link_libraries(${TARGET} PRIVATE psi4::core response)
+    target_link_libraries(${TARGET} PRIVATE tgt::MathOpenMP)
     set_target_properties(${TARGET} PROPERTIES PREFIX "")
-    if (APPLE)
+    if(APPLE)
         set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
 endfunction()
