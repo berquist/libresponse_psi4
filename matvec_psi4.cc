@@ -8,9 +8,7 @@
 
 #include "libresponse/utils.h"
 
-
-MatVec_Psi4::MatVec_Psi4(SharedWavefunction wfn, Options &options) : options_(options)
-{
+MatVec_Psi4::MatVec_Psi4(SharedWavefunction wfn, Options &options) : options_(options) {
 
     wfn_ = wfn;
     std::shared_ptr<BasisSet> basisset_ = wfn_->basisset();
@@ -21,31 +19,28 @@ MatVec_Psi4::MatVec_Psi4(SharedWavefunction wfn, Options &options) : options_(op
     // see psi4/libfock/apps.cc/RBase::preiterations()
     if (!jk_) {
         if (options_.get_bool("SAVE_JK")) {
-            jk_ = (static_cast<psi::scf::HF*>(wfn_.get()))->jk();
+            jk_ = (static_cast<psi::scf::HF *>(wfn_.get()))->jk();
             outfile->Printf("    Reusing JK object from SCF.\n\n");
         } else {
-            if (options_.get_str("SCF_TYPE") == "DF"){
+            if (options_.get_str("SCF_TYPE") == "DF") {
                 jk_ = JK::build_JK(basisset_, wfn->get_basisset("DF_BASIS_SCF"), options_);
             } else {
                 jk_ = JK::build_JK(basisset_, BasisSet::zero_ao_basis_set(), options_);
             }
-            size_t effective_memory = (size_t)(0.125 * options_.get_double("CPHF_MEM_SAFETY_FACTOR") * memory_);
+            size_t effective_memory =
+                (size_t)(0.125 * options_.get_double("CPHF_MEM_SAFETY_FACTOR") * memory_);
             jk_->set_memory(effective_memory);
             jk_->initialize();
         }
     }
-
 }
 
-MatVec_Psi4::~MatVec_Psi4()
-{
+MatVec_Psi4::~MatVec_Psi4() { jk_->finalize(); }
 
-    jk_->finalize();
-
-}
-
-void MatVec_Psi4::compute(arma::cube &J, arma::cube &K, const std::vector<arma::mat> &L, const std::vector<arma::mat> &R)
-{
+void MatVec_Psi4::compute(arma::cube &J,
+                          arma::cube &K,
+                          const std::vector<arma::mat> &L,
+                          const std::vector<arma::mat> &R) {
 
     if (J.n_rows != J.n_cols)
         throw std::runtime_error("J.n_rows != J.n_cols");
@@ -73,8 +68,8 @@ void MatVec_Psi4::compute(arma::cube &J, arma::cube &K, const std::vector<arma::
 
     const size_t nbasis = L[0].n_rows;
 
-    std::vector<SharedMatrix> & vpL = jk_->C_left();
-    std::vector<SharedMatrix> & vpR = jk_->C_right();
+    std::vector<SharedMatrix> &vpL = jk_->C_left();
+    std::vector<SharedMatrix> &vpR = jk_->C_right();
     vpL.clear();
     vpR.clear();
 
@@ -84,8 +79,8 @@ void MatVec_Psi4::compute(arma::cube &J, arma::cube &K, const std::vector<arma::
     // TODO transpose without copy?
     arma::mat tmpL = L[0].t();
     arma::mat tmpR = R[0].t();
-    C_DCOPY(nbasis*nvirt_alph, tmpL.memptr(), 1, pL_alph->pointer()[0], 1);
-    C_DCOPY(nbasis*nvirt_alph, tmpR.memptr(), 1, pR_alph->pointer()[0], 1);
+    C_DCOPY(nbasis * nvirt_alph, tmpL.memptr(), 1, pL_alph->pointer()[0], 1);
+    C_DCOPY(nbasis * nvirt_alph, tmpR.memptr(), 1, pR_alph->pointer()[0], 1);
     vpL.push_back(pL_alph);
     vpR.push_back(pR_alph);
     if (nden == 2) {
@@ -94,8 +89,8 @@ void MatVec_Psi4::compute(arma::cube &J, arma::cube &K, const std::vector<arma::
         SharedMatrix pR_beta(new Matrix("R (beta)", nbasis, nvirt_beta));
         tmpL = L[1].t();
         tmpR = R[1].t();
-        C_DCOPY(nbasis*nvirt_beta, tmpL.memptr(), 1, pL_beta->pointer()[0], 1);
-        C_DCOPY(nbasis*nvirt_beta, tmpR.memptr(), 1, pR_beta->pointer()[0], 1);
+        C_DCOPY(nbasis * nvirt_beta, tmpL.memptr(), 1, pL_beta->pointer()[0], 1);
+        C_DCOPY(nbasis * nvirt_beta, tmpR.memptr(), 1, pR_beta->pointer()[0], 1);
         vpL.push_back(pL_beta);
         vpR.push_back(pR_beta);
     }
@@ -119,5 +114,4 @@ void MatVec_Psi4::compute(arma::cube &J, arma::cube &K, const std::vector<arma::
     }
 
     return;
-
 }

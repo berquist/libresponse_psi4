@@ -1,15 +1,14 @@
+#include "libresponse/operator_spec.h"
 #include "psi4/libmints/wavefunction.h"
 #include "psi4/liboptions/liboptions.h"
-#include "libresponse/operator_spec.h"
 
 #include "wrappers.h"
 
 using namespace libresponse;
 
-void parse_operators(
-    psi::SharedWavefunction &ref_wfn,
-    psi::Options &options,
-    std::vector<operator_spec> &operators) {
+void parse_operators(psi::SharedWavefunction &ref_wfn,
+                     psi::Options &options,
+                     std::vector<operator_spec> &operators) {
 
     arma::cube integrals;
     arma::vec origin(3, arma::fill::zeros);

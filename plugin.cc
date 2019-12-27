@@ -21,16 +21,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along
- * with Psi4; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Psi4; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * @END LICENSE
  */
 
-#include "psi4/psi4-dec.h"
 #include "psi4/liboptions/liboptions.h"
 #include "psi4/libpsio/psio.hpp"
+#include "psi4/psi4-dec.h"
 
 #include "psi4/libmints/basisset.h"
 #include "psi4/libmints/matrix.h"
@@ -51,10 +51,8 @@
 namespace psi {
 namespace libresponse_psi4 {
 
-extern "C"
-int read_options(const std::string& name, Options& options)
-{
-    if (name == "LIBRESPONSE_PSI4"|| options.read_globals()) {
+extern "C" int read_options(const std::string &name, Options &options) {
+    if (name == "LIBRESPONSE_PSI4" || options.read_globals()) {
         /*- The amount of information printed to the output file -*/
         options.add_int("PRINT", 1);
         // void add(std::string key, DataType* data);
@@ -69,9 +67,7 @@ int read_options(const std::string& name, Options& options)
     return true;
 }
 
-extern "C"
-SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options)
-{
+extern "C" SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options &options) {
     // This is the Psi4 output file. Replace the cout stream buffer
     // with the one from Psi4.
     std::ostream *ofs = outfile->stream();
@@ -134,15 +130,21 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
     parse_operators(ref_wfn, options, operators);
 
     // 2-electron integral engine.
-    MatVec_Psi4 * matvec = new MatVec_Psi4(ref_wfn, options);
+    MatVec_Psi4 *matvec = new MatVec_Psi4(ref_wfn, options);
 
-    libresponse::SolverIterator_linear * solver_iterator = new libresponse::SolverIterator_linear();
+    libresponse::SolverIterator_linear *solver_iterator = new libresponse::SolverIterator_linear();
 
     arma::cube results;
 
-    libresponse::solve_linear_response(
-        results, matvec, solver_iterator, C, moene, occupations, omega, operators, libresponse_options
-        );
+    libresponse::solve_linear_response(results,
+                                       matvec,
+                                       solver_iterator,
+                                       C,
+                                       moene,
+                                       occupations,
+                                       omega,
+                                       operators,
+                                       libresponse_options);
 
     delete matvec;
     delete solver_iterator;
@@ -166,4 +168,4 @@ SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options& options
 }
 
 } // namespace libresponse_psi4
-} // namespace psi4
+} // namespace psi

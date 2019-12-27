@@ -8,8 +8,10 @@
 
 using namespace psi;
 
-
-void AO_dipole_length(arma::cube &M_AO, const arma::vec &origin, SharedWavefunction wfn, Options &options) {
+void AO_dipole_length(arma::cube &M_AO,
+                      const arma::vec &origin,
+                      SharedWavefunction wfn,
+                      Options &options) {
 
     const Vector3 sm_origin(origin.memptr());
 
@@ -31,15 +33,21 @@ void AO_dipole_length(arma::cube &M_AO, const arma::vec &origin, SharedWavefunct
 
     for (size_t c = 0; c < v_dipole.size(); c++) {
         SharedMatrix msm_dipole = v_dipole[c];
-        arma::mat ma_dipole(msm_dipole->get_pointer(), msm_dipole->rowdim(), msm_dipole->coldim(), false, true);
+        arma::mat ma_dipole(msm_dipole->get_pointer(),
+                            msm_dipole->rowdim(),
+                            msm_dipole->coldim(),
+                            false,
+                            true);
         M_AO.slice(c) = ma_dipole;
     }
 
     return;
-
 }
 
-void AO_quadrupole_length(arma::cube &M_AO, const arma::vec &origin, SharedWavefunction wfn, Options &options) {
+void AO_quadrupole_length(arma::cube &M_AO,
+                          const arma::vec &origin,
+                          SharedWavefunction wfn,
+                          Options &options) {
 
     const Vector3 sm_origin(origin.memptr());
 
@@ -64,19 +72,25 @@ void AO_quadrupole_length(arma::cube &M_AO, const arma::vec &origin, SharedWavef
 
     for (size_t c = 0; c < v_quadrupole.size(); c++) {
         SharedMatrix msm_quadrupole = v_quadrupole[c];
-        arma::mat ma_quadrupole(msm_quadrupole->get_pointer(), msm_quadrupole->rowdim(), msm_quadrupole->coldim(), false, true);
+        arma::mat ma_quadrupole(msm_quadrupole->get_pointer(),
+                                msm_quadrupole->rowdim(),
+                                msm_quadrupole->coldim(),
+                                false,
+                                true);
         M_AO.slice(c) = ma_quadrupole;
     }
 
     return;
-
 }
 
-void AO_multipole(arma::cube &M_AO, const arma::uvec &order, const arma::vec &origin, SharedWavefunction wfn, Options &options) {
+void AO_multipole(arma::cube &M_AO,
+                  const arma::uvec &order,
+                  const arma::vec &origin,
+                  SharedWavefunction wfn,
+                  Options &options) {
 
     // TODO
     return;
-
 }
 
 void AO_dipole_velocity(arma::cube &D_AO, SharedWavefunction wfn, Options &options) {
@@ -98,16 +112,22 @@ void AO_dipole_velocity(arma::cube &D_AO, SharedWavefunction wfn, Options &optio
 
     for (size_t c = 0; c < v_nabla.size(); c++) {
         SharedMatrix msm_nabla = v_nabla[c];
-        arma::mat ma_nabla(msm_nabla->get_pointer(), msm_nabla->rowdim(), msm_nabla->coldim(), false, true);
+        arma::mat ma_nabla(msm_nabla->get_pointer(),
+                           msm_nabla->rowdim(),
+                           msm_nabla->coldim(),
+                           false,
+                           true);
         D_AO.slice(c) = ma_nabla;
         // TODO check for antisymmetry due to imaginary operator
     }
 
     return;
-
 }
 
-void AO_angular_momentum(arma::cube &L_AO, const arma::vec &origin, SharedWavefunction wfn, Options &options) {
+void AO_angular_momentum(arma::cube &L_AO,
+                         const arma::vec &origin,
+                         SharedWavefunction wfn,
+                         Options &options) {
 
     const Vector3 sm_origin(origin.memptr());
 
@@ -129,11 +149,14 @@ void AO_angular_momentum(arma::cube &L_AO, const arma::vec &origin, SharedWavefu
 
     for (size_t c = 0; c < v_angmom.size(); c++) {
         SharedMatrix msm_angmom = v_angmom[c];
-        arma::mat ma_angmom(msm_angmom->get_pointer(), msm_angmom->rowdim(), msm_angmom->coldim(), false, true);
+        arma::mat ma_angmom(msm_angmom->get_pointer(),
+                            msm_angmom->rowdim(),
+                            msm_angmom->coldim(),
+                            false,
+                            true);
         L_AO.slice(c) = ma_angmom;
         // TODO check for antisymmetry due to imaginary operator
     }
 
     return;
-
 }

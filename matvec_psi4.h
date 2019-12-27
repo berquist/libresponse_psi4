@@ -12,14 +12,15 @@ using namespace psi;
 class MatVec_Psi4 : public MatVec_i {
 
 public:
-
     MatVec_Psi4(SharedWavefunction wfn, Options &options);
     ~MatVec_Psi4();
 
-    void compute(arma::cube &J, arma::cube &K, const std::vector<arma::mat> &L, const std::vector<arma::mat> &R);
+    void compute(arma::cube &J,
+                 arma::cube &K,
+                 const std::vector<arma::mat> &L,
+                 const std::vector<arma::mat> &R);
 
 private:
-
     SharedWavefunction wfn_;
     Options &options_;
     std::shared_ptr<JK> jk_;
