@@ -1,6 +1,6 @@
 # libresponse_psi4
 
-A Psi4 plugin that interfaces to [libresponse](), a generalized molecular property solver.
+A Psi4 plugin that interfaces to [libresponse](https://github.com/LambrechtLab/libresponse), a generalized molecular property solver.
 
 ## Build
 
