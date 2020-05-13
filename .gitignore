@@ -1,9 +1,11 @@
+.cmake/
 CMakeCache.txt
 CMakeFiles/
 Makefile
-cmake_install.cmake
-libresponse_psi4.so
 __pycache__/
+cmake_install.cmake
+compile_commands.json
+libresponse_psi4.so
 
 # symlink
 libresponse
