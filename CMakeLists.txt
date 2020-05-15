@@ -34,22 +34,7 @@ project(libresponse_psi4 CXX)
 
 find_package(psi4 1.1 REQUIRED)
 
-# set(SRC
-#     libresponse/configurable.C
-#     libresponse/dump_ao_integrals.C
-#     libresponse/index_printing.C
-#     libresponse/indices.C
-#     libresponse/matvec_i.C
-#     libresponse/utils.C
-#     libresponse/linear/helpers.C
-#     libresponse/linear/interface.C
-#     libresponse/linear/interface_nonorthogonal.C
-#     libresponse/linear/printing.C
-#     libresponse/operator_spec.C
-#     libresponse/set_defaults.C
-#     )
-
-set(SRC_PSI4
+set(LIBRESPONSE_PSI4_SOURCES
     matvec_psi4.cc
     # operatordatatype.cc
     parse_operators.cc
@@ -77,4 +62,5 @@ function(add_psi4_plugin_custom TARGET SOURCES)
     endif()
 endfunction()
 
-add_psi4_plugin_custom(libresponse_psi4 ${SRC_PSI4})
+add_psi4_plugin_custom(libresponse_psi4 ${LIBRESPONSE_PSI4_SOURCES})
+target_include_directories(libresponse_psi4 PRIVATE libresponse/src)

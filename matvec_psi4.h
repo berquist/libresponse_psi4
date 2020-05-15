@@ -1,11 +1,11 @@
 #ifndef MATVEC_PSI4_H_
 #define MATVEC_PSI4_H_
 
+#include <libresponse/matvec_i.h>
+
 #include "psi4/libfock/jk.h"
 #include "psi4/libmints/wavefunction.h"
 #include "psi4/liboptions/liboptions.h"
-
-#include "libresponse/matvec_i.h"
 
 using namespace psi;
 

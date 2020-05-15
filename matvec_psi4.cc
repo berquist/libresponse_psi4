@@ -6,7 +6,7 @@
 #include "psi4/libqt/qt.h"
 #include "psi4/libscf_solver/hf.h"
 
-#include "libresponse/utils.h"
+#include <libresponse/utils.h>
 
 MatVec_Psi4::MatVec_Psi4(SharedWavefunction wfn, Options &options) : options_(options) {
 

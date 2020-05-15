@@ -28,6 +28,11 @@
  * @END LICENSE
  */
 
+#include <armadillo>
+
+#include <libresponse/libresponse.h>
+#include <libresponse/linear/interface.h>
+
 #include "psi4/liboptions/liboptions.h"
 #include "psi4/libpsio/psio.hpp"
 #include "psi4/psi4-dec.h"
@@ -38,15 +43,10 @@
 #include "psi4/libmints/wavefunction.h"
 #include "psi4/libpsi4util/PsiOutStream.h"
 
-#include "libresponse/libresponse.h"
-#include "libresponse/linear/interface.h"
-
 #include "matvec_psi4.h"
 // #include "operatordatatype.h"
 #include "parse_operators.h"
 #include "wrappers.h"
-
-#include <armadillo>
 
 namespace psi {
 namespace libresponse_psi4 {

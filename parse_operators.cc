@@ -1,4 +1,5 @@
-#include "libresponse/operator_spec.h"
+#include <libresponse/operator_spec.h>
+
 #include "psi4/libmints/wavefunction.h"
 #include "psi4/liboptions/liboptions.h"
 
