@@ -1,0 +1,39 @@
+* libresponse_psi4
+
+A Psi4 plugin that interfaces to [[https://github.com/LambrechtLab/libresponse][libresponse]], a generalized molecular property solver.
+
+** Build
+
+1. Get a working Psi4 install. The easiest way is through Anaconda:
+
+#+begin_src sh
+conda create -n p4env python=3.7 psi4 psi4-dev -c psi4 -c psi4/label/dev
+conda activate p4env
+#+end_src
+
+2. Install additional libresponse dependencies. Currently, this is only [[http://arma.sourceforge.net/][Armadillo]]. There is no hard restriction on the version, as long as everything compiles later on:
+
+#+begin_src sh
+conda install armadillo
+#+end_src
+
+3. Get a copy of this plugin and libresponse, always using the latest version of both (from their =master= branches):
+
+#+begin_src sh
+git clone https://github.com/berquist/libresponse_psi4.git
+cd libresponse_psi4
+git clone -b psi4 https://github.com/lambrechtlab/libresponse.git
+#+end_src
+
+4. Prepare the plugin for compilation, then compile.
+
+#+begin_src sh
+`psi4 --plugin-compile`
+make
+#+end_src
+
+5. Run the example input:
+
+#+begin_src sh
+psi4 input.dat
+#+end_src
