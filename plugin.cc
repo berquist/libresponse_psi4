@@ -53,15 +53,18 @@ namespace libresponse_psi4 {
 
 extern "C" PSI_API int read_options(const std::string &name, Options &options) {
     if (name == "LIBRESPONSE_PSI4" || options.read_globals()) {
-        /*- The amount of information printed to the output file -*/
-        options.add_int("PRINT", 1);
+        options.add_str("order", "linear");
+        options.add_str("solver", "linear");
+        options.add_str("hamiltonian", "rpa");
+        options.add_str("spin", "singlet");
+        options.add_int("maxiter", 60);
         // void add(std::string key, DataType* data);
         // OperatorDataType etc.
-        options.add("OPERATOR_DIPOLE", new ArrayType());
-        options.add("OPERATOR_QUADRUPOLE", new ArrayType());
-        // options.add("OPERATOR_MULTIPOLE", new ArrayType());
-        options.add("OPERATOR_NABLA", new ArrayType());
-        options.add("OPERATOR_ANGMOM", new ArrayType());
+        options.add_array("OPERATOR_DIPOLE");
+        options.add_array("OPERATOR_QUADRUPOLE");
+        // options.add_array("OPERATOR_MULTIPOLE");
+        options.add_array("OPERATOR_NABLA");
+        options.add_array("OPERATOR_ANGMOM");
     }
 
     return true;
@@ -117,7 +120,7 @@ extern "C" PSI_API SharedWavefunction libresponse_psi4(SharedWavefunction ref_wf
     libresponse::configurable libresponse_options;
     set_defaults(libresponse_options);
     // TODO input option
-    libresponse_options.cfg<int>("print_level", 100);
+    libresponse_options.cfg<int>("print_level", 2);
     // Psi4 must take C_left/C_right, not Dg!
     libresponse_options.cfg<bool>("_do_compute_generalized_density", false);
 
