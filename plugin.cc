@@ -51,7 +51,7 @@
 namespace psi {
 namespace libresponse_psi4 {
 
-extern "C" int read_options(const std::string &name, Options &options) {
+extern "C" PSI_API int read_options(const std::string &name, Options &options) {
     if (name == "LIBRESPONSE_PSI4" || options.read_globals()) {
         /*- The amount of information printed to the output file -*/
         options.add_int("PRINT", 1);
@@ -67,7 +67,8 @@ extern "C" int read_options(const std::string &name, Options &options) {
     return true;
 }
 
-extern "C" SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn, Options &options) {
+extern "C" PSI_API SharedWavefunction libresponse_psi4(SharedWavefunction ref_wfn,
+                                                       Options &options) {
     // This is the Psi4 output file. Replace the cout stream buffer
     // with the one from Psi4.
     std::ostream *ofs = outfile->stream();
