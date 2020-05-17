@@ -1,5 +1,6 @@
 .cmake/
 CMakeCache.txt
+CMakeDoxygenDefaults.cmake
 CMakeFiles/
 Makefile
 __pycache__/
@@ -7,8 +8,12 @@ cmake_install.cmake
 compile_commands.json
 libresponse_psi4.so
 
-# symlink
+# symlink / cloned repo
 libresponse
+
+# Doxygen
+html/
+latex/
 
 # Psi4 calculations
 *.clean

@@ -1,0 +1,22 @@
+sys.path.insert(0, './../..')
+import libresponse_psi4
+
+molecule lithium_hydride {
+Li  0.0000  0.0000  0.0000
+H   0.0000  0.0000  1.5949
+    symmetry c1
+    no_reorient
+    no_com
+    units angstrom
+}
+set {
+    basis sto-3g
+    save_jk true
+    scf_type direct
+}
+
+set libresponse_psi4 {
+    operator_dipole [zero]
+}
+
+energy('libresponse_psi4')
