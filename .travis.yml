@@ -1,0 +1,45 @@
+---
+# After changing this file, check it on:
+#   http://lint.travis-ci.org/
+sudo: false
+language: cpp
+dist: bionic
+
+matrix:
+  include:
+  - env:
+    - PYTHON_VER='3.7'
+
+before_install:
+  - env
+  - uname -a
+  - free -m
+  - df -h
+  - ulimit -a
+
+install:
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda create -n p4env python=$PYTHON_VER psi4 psi4-dev -c psi4 -c psi4/label/dev
+  # Can't do `conda init bash; conda activate p4env`...
+  - source activate p4env
+  - git clone -b psi4 --depth 1 https://github.com/berquist/libresponse.git
+  - conda install -c conda-forge armadillo
+  - conda list
+
+before_script:
+  - python -V
+  - export PYTHONPATH="../:$PYTHONPATH"
+
+script:
+  - eval $(psi4 --plugin-compile)
+  - make
+  - psi4 examples/many_operators.in
+
+notifications:
+  email: true
