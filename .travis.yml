@@ -29,7 +29,7 @@ install:
   # Can't do `conda init bash; conda activate p4env`...
   - source activate p4env
   - git clone -b psi4 --depth 1 https://github.com/berquist/libresponse.git
-  - conda install armadillo
+  - conda install -c conda-forge armadillo
   - conda list
 
 before_script:
