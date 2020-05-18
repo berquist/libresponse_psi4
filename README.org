@@ -1,5 +1,7 @@
 * libresponse_psi4
 
+[[https://travis-ci.com/github/berquist/libresponse_psi4][https://api.travis-ci.com/berquist/libresponse_psi4.svg?branch=master]]
+
 A Psi4 plugin that interfaces to [[https://github.com/LambrechtLab/libresponse][libresponse]], a generalized molecular property solver.
 
 ** Build
