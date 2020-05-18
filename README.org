@@ -16,7 +16,7 @@ conda activate p4env
 - Install additional libresponse dependencies. Currently, this is only [[http://arma.sourceforge.net/][Armadillo]]. There is no hard restriction on the version, as long as everything compiles later on:
 
 #+begin_src sh
-conda install armadillo
+conda install -c conda-forge armadillo
 #+end_src
 
 - Get a copy of this plugin and libresponse, always using the latest version of both (from their =master= branches):
