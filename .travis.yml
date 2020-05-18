@@ -22,6 +22,7 @@ install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
+  - conda init bash
   - conda update -q conda
   - conda info -a
   - conda create -n p4env python=$PYTHON_VER psi4 psi4-dev -c psi4 -c psi4/label/dev
