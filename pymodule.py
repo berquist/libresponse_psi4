@@ -32,8 +32,6 @@ import psi4
 import psi4.driver.p4util as p4util
 from psi4.driver.procrouting import proc_util
 
-from psi4.core import print_out
-
 
 def disable_symmetry(molecule):
     """Return a molecule with symmetry completely disabled."""
@@ -58,10 +56,10 @@ def disable_symmetry(molecule):
 
 def run_libresponse_psi4(name, **kwargs):
     r"""Function encoding sequence of PSI module and plugin calls so that
-    libresponse_psi4 can be called via :py:func:`~driver.energy`. For post-scf plugins.
+    libresponse_psi4 can be called via :py:func:`~driver.energy`. For post-scf
+    plugins.
 
     >>> energy('libresponse_psi4')
-
     """
 
     kwargs = p4util.kwargs_lower(kwargs)
@@ -80,8 +78,8 @@ def run_libresponse_psi4(name, **kwargs):
     molecule = disable_symmetry(molecule)
     kwargs["molecule"] = molecule
 
-    # Compute a SCF reference, a wavefunction is return which holds the molecule used, orbitals
-    # Fock matrices, and more
+    # Compute a SCF reference, a wavefunction is return which holds the
+    # molecule used, orbitals Fock matrices, and more
     ref_wfn = kwargs.get("ref_wfn", None)
     if ref_wfn is None:
         ref_wfn = psi4.driver.scf_helper(name, **kwargs)
@@ -100,8 +98,3 @@ def run_libresponse_psi4(name, **kwargs):
 
 # Integration with driver routines
 psi4.driver.procedures["energy"]["libresponse_psi4"] = run_libresponse_psi4
-
-
-def exampleFN():
-    # Your Python code goes here
-    pass

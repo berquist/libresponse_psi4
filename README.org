@@ -35,5 +35,6 @@ make
 5. Run the example input:
 
 #+begin_src sh
-psi4 input.dat
+cd examples
+psi4 many_operators.in
 #+end_src
