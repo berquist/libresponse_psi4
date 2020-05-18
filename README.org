@@ -23,7 +23,7 @@ conda install -c conda-forge armadillo
 #+begin_src sh
 git clone https://github.com/berquist/libresponse_psi4.git
 cd libresponse_psi4
-git clone -b psi4 https://github.com/lambrechtlab/libresponse.git
+git clone https://github.com/lambrechtlab/libresponse.git
 #+end_src
 
 - Prepare the plugin for compilation, then compile.

@@ -28,7 +28,7 @@ install:
   - conda create -n p4env python=$PYTHON_VER psi4 psi4-dev -c psi4 -c psi4/label/dev
   # Can't do `conda init bash; conda activate p4env`...
   - source activate p4env
-  - git clone -b psi4 --depth 1 https://github.com/berquist/libresponse.git
+  - git clone --depth 1 https://github.com/berquist/libresponse.git
   - conda install -c conda-forge armadillo
   - conda list
 
