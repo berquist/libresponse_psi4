@@ -22,11 +22,11 @@ install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-  - conda init bash
   - conda update -q conda
   - conda info -a
   - conda create -n p4env python=$PYTHON_VER psi4 psi4-dev -c psi4 -c psi4/label/dev
-  - conda activate p4env
+  # Can't do `conda init bash; conda activate p4env`...
+  - source activate p4env
   - git clone -b psi4 --depth 1 https://github.com/lambrechtlab/libresponse.git
   - conda install armadillo
   - conda list
