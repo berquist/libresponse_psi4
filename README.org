@@ -28,7 +28,7 @@ git clone -b psi4 https://github.com/lambrechtlab/libresponse.git
 4. Prepare the plugin for compilation, then compile.
 
 #+begin_src sh
-`psi4 --plugin-compile`
+eval $(psi4 --plugin-compile)
 make
 #+end_src
 
